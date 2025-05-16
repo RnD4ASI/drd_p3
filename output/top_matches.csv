@@ -1,0 +1,16 @@
+new_attribute,new_definition,matched_attribute,matched_definition,similarity_score,rank
+sales_revenue,Income from selling products or services,revenue,Total income from sales of goods or services,0.7932626,1
+sales_revenue,Income from selling products or services,operating_cash_flow,Cash generated from core business operations,0.6990916,2
+sales_revenue,Income from selling products or services,gross_profit,Revenue minus cost of goods sold,0.6282307,3
+net_profit,Earnings after all expenses and taxes,net_income,Total profit after all expenses and taxes,0.7810043,1
+net_profit,Earnings after all expenses and taxes,revenue,Total income from sales of goods or services,0.61671954,2
+net_profit,Earnings after all expenses and taxes,total_assets,Sum of all company-owned resources,0.5327573,3
+current_assets,Short-term assets convertible to cash within a year,operating_cash_flow,Cash generated from core business operations,0.5354371,1
+current_assets,Short-term assets convertible to cash within a year,total_assets,Sum of all company-owned resources,0.38382497,2
+current_assets,Short-term assets convertible to cash within a year,revenue,Total income from sales of goods or services,0.32725185,3
+cash_flow_from_operations,Cash generated from primary business activities,operating_cash_flow,Cash generated from core business operations,0.93394125,1
+cash_flow_from_operations,Cash generated from primary business activities,total_assets,Sum of all company-owned resources,0.6542782,2
+cash_flow_from_operations,Cash generated from primary business activities,revenue,Total income from sales of goods or services,0.65246093,3
+profit_margin,Percentage of revenue that becomes profit,gross_profit,Revenue minus cost of goods sold,0.6708011,1
+profit_margin,Percentage of revenue that becomes profit,net_income,Total profit after all expenses and taxes,0.54538,2
+profit_margin,Percentage of revenue that becomes profit,revenue,Total income from sales of goods or services,0.5167797,3

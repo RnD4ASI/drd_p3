@@ -1,0 +1,26 @@
+new_attribute,new_definition,unique_attribute,unique_definition,similarity_score
+sales_revenue,Income from selling products or services,revenue,Total income from sales of goods or services,0.7932626
+sales_revenue,Income from selling products or services,net_income,Total profit after all expenses and taxes,0.5354567
+sales_revenue,Income from selling products or services,total_assets,Sum of all company-owned resources,0.4932805
+sales_revenue,Income from selling products or services,operating_cash_flow,Cash generated from core business operations,0.6990916
+sales_revenue,Income from selling products or services,gross_profit,Revenue minus cost of goods sold,0.6282307
+net_profit,Earnings after all expenses and taxes,revenue,Total income from sales of goods or services,0.61671954
+net_profit,Earnings after all expenses and taxes,net_income,Total profit after all expenses and taxes,0.7810043
+net_profit,Earnings after all expenses and taxes,total_assets,Sum of all company-owned resources,0.5327573
+net_profit,Earnings after all expenses and taxes,operating_cash_flow,Cash generated from core business operations,0.5043943
+net_profit,Earnings after all expenses and taxes,gross_profit,Revenue minus cost of goods sold,0.49777454
+current_assets,Short-term assets convertible to cash within a year,revenue,Total income from sales of goods or services,0.32725185
+current_assets,Short-term assets convertible to cash within a year,net_income,Total profit after all expenses and taxes,0.302491
+current_assets,Short-term assets convertible to cash within a year,total_assets,Sum of all company-owned resources,0.38382497
+current_assets,Short-term assets convertible to cash within a year,operating_cash_flow,Cash generated from core business operations,0.5354371
+current_assets,Short-term assets convertible to cash within a year,gross_profit,Revenue minus cost of goods sold,0.32166505
+cash_flow_from_operations,Cash generated from primary business activities,revenue,Total income from sales of goods or services,0.65246093
+cash_flow_from_operations,Cash generated from primary business activities,net_income,Total profit after all expenses and taxes,0.47273052
+cash_flow_from_operations,Cash generated from primary business activities,total_assets,Sum of all company-owned resources,0.6542782
+cash_flow_from_operations,Cash generated from primary business activities,operating_cash_flow,Cash generated from core business operations,0.93394125
+cash_flow_from_operations,Cash generated from primary business activities,gross_profit,Revenue minus cost of goods sold,0.5509975
+profit_margin,Percentage of revenue that becomes profit,revenue,Total income from sales of goods or services,0.5167797
+profit_margin,Percentage of revenue that becomes profit,net_income,Total profit after all expenses and taxes,0.54538
+profit_margin,Percentage of revenue that becomes profit,total_assets,Sum of all company-owned resources,0.42630392
+profit_margin,Percentage of revenue that becomes profit,operating_cash_flow,Cash generated from core business operations,0.46916693
+profit_margin,Percentage of revenue that becomes profit,gross_profit,Revenue minus cost of goods sold,0.6708011

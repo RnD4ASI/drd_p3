@@ -1,0 +1,16 @@
+id,name,definition
+DA001,Customer ID,A unique identifier assigned to each customer
+DA002,Product SKU,Stock keeping unit code used to identify products in inventory
+DA003,Transaction Date,The date when a transaction was completed
+DA004,Purchase Amount,The total monetary value of a purchase transaction
+DA005,Customer Name,The full name of a customer
+DA006,Email Address,Electronic mail address used for customer communications
+DA007,Phone Number,Telephone contact number for the customer
+DA008,Shipping Address,Physical address where products are to be delivered
+DA009,Payment Method,The form of payment used in a transaction
+DA010,Order Status,Current state of a customer order in the fulfillment process
+DA011,Product Category,Classification of products by their type or purpose
+DA012,Discount Amount,Monetary value deducted from the original price
+DA013,Tax Rate,Percentage rate at which a product or service is taxed
+DA014,Employee ID,Unique identifier assigned to each employee
+DA015,Department Code,Code representing a specific department within an organization

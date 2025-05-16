@@ -1,0 +1,11 @@
+id,name,definition
+NA001,Client Identifier,A unique ID given to each client in the system
+NA002,Product Stock Code,Code used to identify items in inventory
+NA003,Transaction Date,Date when a transaction was processed
+NA004,Customer Name,The name of a customer as it appears in records
+NA005,Client Phone,Contact telephone number for the client
+NA006,Order Amount,The total monetary value of an order
+NA007,Email Contact,Email address used for contacting customers
+NA008,Shipping Location,Address where products will be shipped
+NA009,Payment Type,Method used by customer to pay for products
+NA010,Product Group,Classification of products by category
