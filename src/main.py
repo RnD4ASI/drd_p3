@@ -29,7 +29,7 @@ def main():
     unique_data = os.environ.get('UNIQUE_DATA', './data/unique_attributes.csv')
     new_data = os.environ.get('NEW_DATA', './data/new_attributes.csv')
     provider = os.environ.get('PROVIDER', 'huggingface')
-    model_path = os.environ.get('MODEL_PATH', 'all-MiniLM-L6-v2')
+    model_path = os.environ.get('MODEL_PATH', 'model/finance_embeddings')
     output_dir = os.environ.get('OUTPUT_DIR', './output')
     should_save_embeddings = os.environ.get('SHOULD_SAVE_EMBEDDINGS', 'false').lower() in ('true', 'yes', '1')
     symbolic_weight = float(os.environ.get('SYMBOLIC_WEIGHT', '0.3'))
@@ -44,17 +44,23 @@ def main():
     run_dir = os.path.join(output_dir, f'run_{timestamp}')
     embeddings_dir = os.path.join(run_dir, 'embeddings')
     results_dir = os.path.join(run_dir, 'results')
-    
     os.makedirs(run_dir, exist_ok=True)
     os.makedirs(embeddings_dir, exist_ok=True)
     os.makedirs(results_dir, exist_ok=True)
-    
-    # Log the output directories
+
+    # Add log file handler for this run
+    log_file_path = os.path.join(run_dir, 'deduplication.log')
+    logger.add(log_file_path, format="{time:YYYY-MM-DD HH:mm:ss} | {level: <8} | {name}:{function}:{line} - {message}", level="DEBUG", enqueue=True, backtrace=True, diagnose=True)
+
+    # Log the output directories and parameters
     logger.info(f"Output will be saved to: {run_dir}")
     logger.info(f"Embeddings will be saved to: {embeddings_dir}")
     logger.info(f"Results will be saved to: {results_dir}")
-    
-    logger.info(f"Starting data attribute deduplication with {provider} model: {model_path}")
+    logger.info(f"Run log file: {log_file_path}")
+    logger.info(f"Starting data attribute deduplication with provider={provider}, model_path={model_path}, symbolic_weight={symbolic_weight}, semantic_weight={semantic_weight}, top_k={top_k}")
+    logger.info(f"Should save embeddings: {should_save_embeddings}")
+    logger.info(f"Unique data file: {unique_data}")
+    logger.info(f"New data file: {new_data}")
     
     # Initialize utilities
     data_util = DataUtility()
@@ -70,9 +76,38 @@ def main():
         new_df = data_util.text_operation('load', new_data, file_type='csv')
         logger.info(f"Loaded {len(new_df)} new data attributes")
         
+        # Edge Case 1: Empty DataFrames
+        if unique_df.empty:
+            logger.error("Unique attributes CSV is empty. Exiting.")
+            raise ValueError("Unique attributes CSV is empty.")
+        if new_df.empty:
+            logger.error("New attributes CSV is empty. Exiting.")
+            raise ValueError("New attributes CSV is empty.")
+        
+        # Edge Case 2: Missing columns
+        required_cols = {'id', 'name', 'definition'}
+        if not required_cols.issubset(unique_df.columns):
+            logger.error(f"Unique attributes CSV missing columns: {required_cols - set(unique_df.columns)}")
+            raise ValueError(f"Unique attributes CSV missing columns: {required_cols - set(unique_df.columns)}")
+        if not required_cols.issubset(new_df.columns):
+            logger.error(f"New attributes CSV missing columns: {required_cols - set(new_df.columns)}")
+            raise ValueError(f"New attributes CSV missing columns: {required_cols - set(new_df.columns)}")
+        
         # 2. Process data attributes
         unique_attributes = process_attribute_data(unique_df)
         new_attributes = process_attribute_data(new_df)
+        
+        # Edge Case 3: All texts empty after preprocessing (for TF-IDF)
+        from src.hybrid_search import HybridSearch
+        temp_hybrid = HybridSearch()
+        all_unique_texts = [temp_hybrid._preprocess_text(attr.get('name',''), attr.get('definition','')) for attr in unique_attributes]
+        all_new_texts = [temp_hybrid._preprocess_text(attr.get('name',''), attr.get('definition','')) for attr in new_attributes]
+        if all(not s.strip() for s in all_unique_texts):
+            logger.error("All unique attributes are empty after preprocessing. TF-IDF will fail.")
+            raise ValueError("All unique attributes are empty after preprocessing.")
+        if all(not s.strip() for s in all_new_texts):
+            logger.error("All new attributes are empty after preprocessing. TF-IDF will fail.")
+            raise ValueError("All new attributes are empty after preprocessing.")
         
         # 3. Generate embeddings for unique attributes
         logger.info(f"Generating embeddings for unique attributes using {provider}")
@@ -82,6 +117,10 @@ def main():
             provider=provider
         )
         logger.info(f"Generated {len(unique_embeddings)} embeddings for unique attributes")
+        # Edge Case 4: Attributes and embeddings count mismatch
+        if len(unique_embeddings) != len(unique_attributes):
+            logger.error("Mismatch: Number of unique embeddings does not match number of unique attributes.")
+            raise ValueError("Mismatch: Number of unique embeddings does not match number of unique attributes.")
         
         # Save embeddings if requested
         if should_save_embeddings:
@@ -105,6 +144,10 @@ def main():
             provider=provider
         )
         logger.info(f"Generated {len(new_embeddings)} embeddings for new attributes")
+        # Edge Case 4: Attributes and embeddings count mismatch
+        if len(new_embeddings) != len(new_attributes):
+            logger.error("Mismatch: Number of new embeddings does not match number of new attributes.")
+            raise ValueError("Mismatch: Number of new embeddings does not match number of new attributes.")
         
         # Save embeddings if requested
         if should_save_embeddings:

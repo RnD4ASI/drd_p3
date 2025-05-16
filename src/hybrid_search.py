@@ -6,7 +6,10 @@ from pathlib import Path
 import re
 import json
 from sklearn.metrics.pairwise import cosine_similarity
-from difflib import SequenceMatcher
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.metrics.pairwise import cosine_similarity
+import string
+from sklearn.feature_extraction import text as sklearn_text
 from sentence_transformers import util
 from loguru import logger
 
@@ -39,75 +42,34 @@ class HybridSearch:
         self.data_utility = DataUtility()
         logger.info(f"HybridSearch initialized with weights: symbolic={self.symbolic_weight}, semantic={self.semantic_weight}")
     
-    def string_similarity(self, str1: str, str2: str) -> float:
-        """Calculate string similarity using sequence matcher.
-        
-        Parameters:
-            str1 (str): First string
-            str2 (str): Second string
-            
-        Returns:
-            float: Similarity score between 0 and 1
+    def _preprocess_text(self, name: str, definition: str) -> str:
         """
-        if not str1 or not str2:
-            return 0.0
-            
-        # Convert to lowercase for case-insensitive matching
-        str1 = str1.lower()
-        str2 = str2.lower()
-        
-        # Use SequenceMatcher for string similarity
-        return SequenceMatcher(None, str1, str2).ratio()
+        Concatenate, lowercase, remove punctuation/stopwords from name and definition.
+        """
+        stop_words = set(sklearn_text.ENGLISH_STOP_WORDS)
+        text = f"{name} {definition}".lower()
+        text = text.translate(str.maketrans('', '', string.punctuation))
+        tokens = [w for w in text.split() if w not in stop_words]
+        return ' '.join(tokens)
     
-    def _preprocess_text(self, text: str) -> str:
-        """Preprocess text for symbolic matching.
-        
-        Parameters:
-            text (str): Text to preprocess
-            
-        Returns:
-            str: Preprocessed text
+    def symbolic_scores(self, query_item: Dict[str, str], pool_items: list) -> list:
         """
-        if not text:
-            return ""
-            
-        # Convert to lowercase
-        text = text.lower()
-        
-        # Remove special characters
-        text = re.sub(r'[^\w\s]', ' ', text)
-        
-        # Remove extra whitespace
-        text = re.sub(r'\s+', ' ', text).strip()
-        
-        return text
+        Compute symbolic (TF-IDF cosine similarity) scores between query and pool.
+        Returns a list of floats, one per pool item.
+        """
+        # Preprocess all texts
+        pool_docs = [self._preprocess_text(item.get('name',''), item.get('definition','')) for item in pool_items]
+        query_doc = self._preprocess_text(query_item.get('name',''), query_item.get('definition',''))
+        all_docs = pool_docs + [query_doc]
+        # Fit TF-IDF
+        vectorizer = TfidfVectorizer().fit(all_docs)
+        tfidf_matrix = vectorizer.transform(all_docs)
+        query_vec = tfidf_matrix[-1]
+        pool_matrix = tfidf_matrix[:-1]
+        # Cosine similarity between query and all pool
+        sims = cosine_similarity(query_vec, pool_matrix)[0]
+        return sims.tolist()
     
-    def symbolic_match_score(self, item1: Dict[str, str], item2: Dict[str, str]) -> float:
-        """Calculate symbolic match score between two data attributes.
-        
-        Parameters:
-            item1 (Dict[str, str]): First data attribute with 'name' and 'definition' keys
-            item2 (Dict[str, str]): Second data attribute with 'name' and 'definition' keys
-            
-        Returns:
-            float: Symbolic match score between 0 and 1
-        """
-        # Extract name and definition
-        name1 = item1.get('name', '')
-        name2 = item2.get('name', '')
-        def1 = item1.get('definition', '')
-        def2 = item2.get('definition', '')
-        
-        # Preprocess texts
-        name1 = self._preprocess_text(name1)
-        name2 = self._preprocess_text(name2)
-        def1 = self._preprocess_text(def1)
-        def2 = self._preprocess_text(def2)
-        
-        # Calculate name and definition similarities
-        name_sim = self.string_similarity(name1, name2)
-        def_sim = self.string_similarity(def1, def2)
-        
         # Equal weight for name and definition similarity
         return (name_sim + def_sim) / 2
     
@@ -137,33 +99,21 @@ class HybridSearch:
         # Ensure result is between 0 and 1
         return max(0, min(1, float(similarity)))
     
-    def hybrid_match_score(self, item1: Dict[str, str], item2: Dict[str, str], 
-                          embedding1: np.ndarray, embedding2: np.ndarray) -> Dict[str, float]:
-        """Calculate hybrid match score combining symbolic and semantic methods.
-        
-        Parameters:
-            item1 (Dict[str, str]): First data attribute with 'name' and 'definition' keys
-            item2 (Dict[str, str]): Second data attribute with 'name' and 'definition' keys
-            embedding1 (np.ndarray): Embedding vector for first attribute
-            embedding2 (np.ndarray): Embedding vector for second attribute
-            
-        Returns:
-            Dict[str, float]: Dictionary with symbolic, semantic, and hybrid scores
+    def hybrid_match_scores(self, query_item: Dict[str, str], pool_items: list, query_embedding: np.ndarray, pool_embeddings: np.ndarray) -> list:
         """
-        # Calculate symbolic score
-        symbolic_score = self.symbolic_match_score(item1, item2)
-        
-        # Calculate semantic score
-        semantic_score = self.semantic_match_score(embedding1, embedding2)
-        
-        # Calculate weighted hybrid score
-        hybrid_score = (self.symbolic_weight * symbolic_score) + (self.semantic_weight * semantic_score)
-        
-        return {
-            'symbolic_score': symbolic_score,
-            'semantic_score': semantic_score,
-            'hybrid_score': hybrid_score
-        }
+        Compute hybrid scores for a query against a pool.
+        Returns a list of dicts: [{symbolic_score, semantic_score, hybrid_score}, ...]
+        """
+        # Symbolic (TF-IDF cosine) scores
+        symbolic_scores = self.symbolic_scores(query_item, pool_items)
+        # Semantic (embedding cosine) scores
+        semantic_scores = [self.semantic_match_score(query_embedding, emb) for emb in pool_embeddings]
+        # Hybrid scores
+        results = []
+        for sym, sem in zip(symbolic_scores, semantic_scores):
+            hybrid = self.symbolic_weight * sym + self.semantic_weight * sem
+            results.append({'symbolic_score': sym, 'semantic_score': sem, 'hybrid_score': hybrid})
+        return results
     
     def find_top_matches(self, query_item: Dict[str, Any], query_embedding: np.ndarray,
                        candidates: List[Dict[str, Any]], candidate_embeddings: np.ndarray,
@@ -181,25 +131,12 @@ class HybridSearch:
             List[Dict[str, Any]]: List of top matches with scores
         """
         results = []
-        
-        # Calculate match scores for all candidates
-        for i, candidate in enumerate(candidates):
+        # Compute all hybrid scores in batch
+        scores_list = self.hybrid_match_scores(query_item, candidates, query_embedding, candidate_embeddings)
+        for i, (candidate, scores) in enumerate(zip(candidates, scores_list)):
             # Skip if comparing with itself (by ID)
             if 'id' in query_item and 'id' in candidate and query_item['id'] == candidate['id']:
                 continue
-                
-            # Get candidate embedding
-            candidate_embedding = candidate_embeddings[i]
-            
-            # Calculate hybrid score
-            scores = self.hybrid_match_score(
-                {'name': query_item['name'], 'definition': query_item['definition']},
-                {'name': candidate['name'], 'definition': candidate['definition']},
-                query_embedding,
-                candidate_embedding
-            )
-            
-            # Add to results
             results.append({
                 'candidate_id': candidate.get('id', f"candidate_{i}"),
                 'candidate_name': candidate['name'],

@@ -1,0 +1,31 @@
+new_id,new_name,new_definition,match_rank,match_id,match_name,match_definition,symbolic_score,semantic_score,hybrid_score
+NA001,Client Identifier,A unique ID given to each client in the system,1,DA001,Customer ID,A unique identifier assigned to each customer,0.4642857142857143,0.708730936050415,0.6353973695210048
+NA001,Client Identifier,A unique ID given to each client in the system,2,DA014,Employee ID,Unique identifier assigned to each employee,0.4257624398073836,0.5481230616569519,0.5114148751020814
+NA001,Client Identifier,A unique ID given to each client in the system,3,DA005,Customer Name,The full name of a customer,0.22922374429223744,0.35849374532699585,0.3197127450165683
+NA002,Product Stock Code,Code used to identify items in inventory,1,DA002,Product SKU,Stock keeping unit code used to identify products in inventory,0.7075726842461123,0.7968848943710327,0.7700912313335566
+NA002,Product Stock Code,Code used to identify items in inventory,2,DA015,Department Code,Code representing a specific department within an organization,0.4688057040998217,0.4049523174762726,0.4241083334633373
+NA002,Product Stock Code,Code used to identify items in inventory,3,DA011,Product Category,Classification of products by their type or purpose,0.38202973497091147,0.3554670810699463,0.36343587724023585
+NA003,Transaction Date,Date when a transaction was processed,1,DA003,Transaction Date,The date when a transaction was completed,0.9102564102564102,0.9029592275619507,0.9051483823702884
+NA003,Transaction Date,Date when a transaction was processed,2,DA009,Payment Method,The form of payment used in a transaction,0.3769230769230769,0.33986473083496094,0.3509822346613957
+NA003,Transaction Date,Date when a transaction was processed,3,DA010,Order Status,Current state of a customer order in the fulfillment process,0.3133284241531664,0.3459843099117279,0.3361875441841594
+NA004,Customer Name,The name of a customer as it appears in records,1,DA005,Customer Name,The full name of a customer,0.7972972972972974,0.8710824251174927,0.848946886771434
+NA004,Customer Name,The name of a customer as it appears in records,2,DA001,Customer ID,A unique identifier assigned to each customer,0.5380434782608696,0.5993821024894714,0.5809805152208909
+NA004,Customer Name,The name of a customer as it appears in records,3,DA006,Email Address,Electronic mail address used for customer communications,0.21321882001493653,0.37899643182754517,0.3292631482837626
+NA005,Client Phone,Contact telephone number for the client,1,DA007,Phone Number,Telephone contact number for the customer,0.5458333333333334,0.6753730773925781,0.6365111541748046
+NA005,Client Phone,Contact telephone number for the client,2,DA005,Customer Name,The full name of a customer,0.2509090909090909,0.3456762433052063,0.3172460975863717
+NA005,Client Phone,Contact telephone number for the client,3,DA006,Email Address,Electronic mail address used for customer communications,0.2905263157894737,0.308109849691391,0.3028347895208158
+NA006,Order Amount,The total monetary value of an order,1,DA004,Purchase Amount,The total monetary value of a purchase transaction,0.693798449612403,0.7202554941177368,0.7123183807661366
+NA006,Order Amount,The total monetary value of an order,2,DA012,Discount Amount,Monetary value deducted from the original price,0.5493083444890674,0.49571046233177185,0.5117898269789605
+NA006,Order Amount,The total monetary value of an order,3,DA010,Order Status,Current state of a customer order in the fulfillment process,0.5104166666666666,0.40343523025512695,0.4355296611785888
+NA007,Email Contact,Email address used for contacting customers,1,DA006,Email Address,Electronic mail address used for customer communications,0.5924630924630925,0.7838904857635498,0.7264622677734126
+NA007,Email Contact,Email address used for contacting customers,2,DA005,Customer Name,The full name of a customer,0.31978021978021975,0.43602171540260315,0.40114926671588813
+NA007,Email Contact,Email address used for contacting customers,3,DA007,Phone Number,Telephone contact number for the customer,0.34190476190476193,0.36030375957489014,0.3547840602738517
+NA008,Shipping Location,Address where products will be shipped,1,DA008,Shipping Address,Physical address where products are to be delivered,0.6401089547156963,0.8545886278152466,0.7902447258853815
+NA008,Shipping Location,Address where products will be shipped,2,DA010,Order Status,Current state of a customer order in the fulfillment process,0.25650950035186487,0.36830848455429077,0.334768789293563
+NA008,Shipping Location,Address where products will be shipped,3,DA011,Product Category,Classification of products by their type or purpose,0.4065372829417773,0.24557267129421234,0.2938620547884818
+NA009,Payment Type,Method used by customer to pay for products,1,DA009,Payment Method,The form of payment used in a transaction,0.5247252747252747,0.7825227379798889,0.7051834990035046
+NA009,Payment Type,Method used by customer to pay for products,2,DA004,Purchase Amount,The total monetary value of a purchase transaction,0.3249701314217443,0.5184974670410156,0.46043926635523424
+NA009,Payment Type,Method used by customer to pay for products,3,DA011,Product Category,Classification of products by their type or purpose,0.32750759878419455,0.3331630229949951,0.3314663957317549
+NA010,Product Group,Classification of products by category,1,DA011,Product Category,Classification of products by their type or purpose,0.726850058117009,0.8640568256378174,0.8228947953815748
+NA010,Product Group,Classification of products by category,2,DA002,Product SKU,Stock keeping unit code used to identify products in inventory,0.565,0.400221586227417,0.44965511035919187
+NA010,Product Group,Classification of products by category,3,DA013,Tax Rate,Percentage rate at which a product or service is taxed,0.2800207039337474,0.2654695212841034,0.2698348760789966

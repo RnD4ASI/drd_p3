@@ -1,0 +1,312 @@
+[
+  {
+    "id": "NA001",
+    "name": "Client Identifier",
+    "definition": "A unique ID given to each client in the system",
+    "matches": [
+      {
+        "candidate_id": "DA001",
+        "candidate_name": "Customer ID",
+        "candidate_definition": "A unique identifier assigned to each customer",
+        "symbolic_score": 0.4642857142857143,
+        "semantic_score": 0.6893231868743896,
+        "hybrid_score": 0.621811945097787
+      },
+      {
+        "candidate_id": "DA014",
+        "candidate_name": "Employee ID",
+        "candidate_definition": "Unique identifier assigned to each employee",
+        "symbolic_score": 0.4257624398073836,
+        "semantic_score": 0.5853733420372009,
+        "hybrid_score": 0.5374900713682558
+      },
+      {
+        "candidate_id": "DA005",
+        "candidate_name": "Customer Name",
+        "candidate_definition": "The full name of a customer",
+        "symbolic_score": 0.22922374429223744,
+        "semantic_score": 0.4765450954437256,
+        "hybrid_score": 0.4023486900982791
+      }
+    ]
+  },
+  {
+    "id": "NA002",
+    "name": "Product Stock Code",
+    "definition": "Code used to identify items in inventory",
+    "matches": [
+      {
+        "candidate_id": "DA002",
+        "candidate_name": "Product SKU",
+        "candidate_definition": "Stock keeping unit code used to identify products in inventory",
+        "symbolic_score": 0.7075726842461123,
+        "semantic_score": 0.8282272219657898,
+        "hybrid_score": 0.7920308606498865
+      },
+      {
+        "candidate_id": "DA015",
+        "candidate_name": "Department Code",
+        "candidate_definition": "Code representing a specific department within an organization",
+        "symbolic_score": 0.4688057040998217,
+        "semantic_score": 0.5699583888053894,
+        "hybrid_score": 0.5396125833937191
+      },
+      {
+        "candidate_id": "DA001",
+        "candidate_name": "Customer ID",
+        "candidate_definition": "A unique identifier assigned to each customer",
+        "symbolic_score": 0.41866125760649087,
+        "semantic_score": 0.42684563994407654,
+        "hybrid_score": 0.42439032524280085
+      }
+    ]
+  },
+  {
+    "id": "NA003",
+    "name": "Transaction Date",
+    "definition": "Date when a transaction was processed",
+    "matches": [
+      {
+        "candidate_id": "DA003",
+        "candidate_name": "Transaction Date",
+        "candidate_definition": "The date when a transaction was completed",
+        "symbolic_score": 0.9102564102564102,
+        "semantic_score": 0.9484801292419434,
+        "hybrid_score": 0.9370130135462833
+      },
+      {
+        "candidate_id": "DA009",
+        "candidate_name": "Payment Method",
+        "candidate_definition": "The form of payment used in a transaction",
+        "symbolic_score": 0.3769230769230769,
+        "semantic_score": 0.389616996049881,
+        "hybrid_score": 0.3858088203118397
+      },
+      {
+        "candidate_id": "DA010",
+        "candidate_name": "Order Status",
+        "candidate_definition": "Current state of a customer order in the fulfillment process",
+        "symbolic_score": 0.3133284241531664,
+        "semantic_score": 0.32256680727005005,
+        "hybrid_score": 0.31979529233498494
+      }
+    ]
+  },
+  {
+    "id": "NA004",
+    "name": "Customer Name",
+    "definition": "The name of a customer as it appears in records",
+    "matches": [
+      {
+        "candidate_id": "DA005",
+        "candidate_name": "Customer Name",
+        "candidate_definition": "The full name of a customer",
+        "symbolic_score": 0.7972972972972974,
+        "semantic_score": 0.9116491079330444,
+        "hybrid_score": 0.8773435647423202
+      },
+      {
+        "candidate_id": "DA001",
+        "candidate_name": "Customer ID",
+        "candidate_definition": "A unique identifier assigned to each customer",
+        "symbolic_score": 0.5380434782608696,
+        "semantic_score": 0.6955425143241882,
+        "hybrid_score": 0.6482928035051926
+      },
+      {
+        "candidate_id": "DA007",
+        "candidate_name": "Phone Number",
+        "candidate_definition": "Telephone contact number for the customer",
+        "symbolic_score": 0.2963636363636364,
+        "semantic_score": 0.6155110597610474,
+        "hybrid_score": 0.519766832741824
+      }
+    ]
+  },
+  {
+    "id": "NA005",
+    "name": "Client Phone",
+    "definition": "Contact telephone number for the client",
+    "matches": [
+      {
+        "candidate_id": "DA007",
+        "candidate_name": "Phone Number",
+        "candidate_definition": "Telephone contact number for the customer",
+        "symbolic_score": 0.5458333333333334,
+        "semantic_score": 0.8139163851737976,
+        "hybrid_score": 0.7334914696216583
+      },
+      {
+        "candidate_id": "DA005",
+        "candidate_name": "Customer Name",
+        "candidate_definition": "The full name of a customer",
+        "symbolic_score": 0.2509090909090909,
+        "semantic_score": 0.5330172777175903,
+        "hybrid_score": 0.44838482167504046
+      },
+      {
+        "candidate_id": "DA006",
+        "candidate_name": "Email Address",
+        "candidate_definition": "Electronic mail address used for customer communications",
+        "symbolic_score": 0.2905263157894737,
+        "semantic_score": 0.5151488184928894,
+        "hybrid_score": 0.44776206768186466
+      }
+    ]
+  },
+  {
+    "id": "NA006",
+    "name": "Order Amount",
+    "definition": "The total monetary value of an order",
+    "matches": [
+      {
+        "candidate_id": "DA004",
+        "candidate_name": "Purchase Amount",
+        "candidate_definition": "The total monetary value of a purchase transaction",
+        "symbolic_score": 0.693798449612403,
+        "semantic_score": 0.7589002847671509,
+        "hybrid_score": 0.7393697342207264
+      },
+      {
+        "candidate_id": "DA012",
+        "candidate_name": "Discount Amount",
+        "candidate_definition": "Monetary value deducted from the original price",
+        "symbolic_score": 0.5493083444890674,
+        "semantic_score": 0.5612637996673584,
+        "hybrid_score": 0.557677163113871
+      },
+      {
+        "candidate_id": "DA009",
+        "candidate_name": "Payment Method",
+        "candidate_definition": "The form of payment used in a transaction",
+        "symbolic_score": 0.2842157842157842,
+        "semantic_score": 0.49984315037727356,
+        "hybrid_score": 0.43515494052882675
+      }
+    ]
+  },
+  {
+    "id": "NA007",
+    "name": "Email Contact",
+    "definition": "Email address used for contacting customers",
+    "matches": [
+      {
+        "candidate_id": "DA006",
+        "candidate_name": "Email Address",
+        "candidate_definition": "Electronic mail address used for customer communications",
+        "symbolic_score": 0.5924630924630925,
+        "semantic_score": 0.8719406127929688,
+        "hybrid_score": 0.7880973566940058
+      },
+      {
+        "candidate_id": "DA007",
+        "candidate_name": "Phone Number",
+        "candidate_definition": "Telephone contact number for the customer",
+        "symbolic_score": 0.34190476190476193,
+        "semantic_score": 0.6472374200820923,
+        "hybrid_score": 0.5556376226288932
+      },
+      {
+        "candidate_id": "DA005",
+        "candidate_name": "Customer Name",
+        "candidate_definition": "The full name of a customer",
+        "symbolic_score": 0.31978021978021975,
+        "semantic_score": 0.5408898591995239,
+        "hybrid_score": 0.47455696737373265
+      }
+    ]
+  },
+  {
+    "id": "NA008",
+    "name": "Shipping Location",
+    "definition": "Address where products will be shipped",
+    "matches": [
+      {
+        "candidate_id": "DA008",
+        "candidate_name": "Shipping Address",
+        "candidate_definition": "Physical address where products are to be delivered",
+        "symbolic_score": 0.6401089547156963,
+        "semantic_score": 0.892814040184021,
+        "hybrid_score": 0.8170025145435236
+      },
+      {
+        "candidate_id": "DA006",
+        "candidate_name": "Email Address",
+        "candidate_definition": "Electronic mail address used for customer communications",
+        "symbolic_score": 0.20354609929078013,
+        "semantic_score": 0.46503496170043945,
+        "hybrid_score": 0.3865883029775416
+      },
+      {
+        "candidate_id": "DA010",
+        "candidate_name": "Order Status",
+        "candidate_definition": "Current state of a customer order in the fulfillment process",
+        "symbolic_score": 0.25650950035186487,
+        "semantic_score": 0.3833674192428589,
+        "hybrid_score": 0.34531004357556067
+      }
+    ]
+  },
+  {
+    "id": "NA009",
+    "name": "Payment Type",
+    "definition": "Method used by customer to pay for products",
+    "matches": [
+      {
+        "candidate_id": "DA009",
+        "candidate_name": "Payment Method",
+        "candidate_definition": "The form of payment used in a transaction",
+        "symbolic_score": 0.5247252747252747,
+        "semantic_score": 0.820229709148407,
+        "hybrid_score": 0.7315783788214673
+      },
+      {
+        "candidate_id": "DA004",
+        "candidate_name": "Purchase Amount",
+        "candidate_definition": "The total monetary value of a purchase transaction",
+        "symbolic_score": 0.3249701314217443,
+        "semantic_score": 0.544636070728302,
+        "hybrid_score": 0.4787362889363347
+      },
+      {
+        "candidate_id": "DA011",
+        "candidate_name": "Product Category",
+        "candidate_definition": "Classification of products by their type or purpose",
+        "symbolic_score": 0.32750759878419455,
+        "semantic_score": 0.4155574440956116,
+        "hybrid_score": 0.3891424905021864
+      }
+    ]
+  },
+  {
+    "id": "NA010",
+    "name": "Product Group",
+    "definition": "Classification of products by category",
+    "matches": [
+      {
+        "candidate_id": "DA011",
+        "candidate_name": "Product Category",
+        "candidate_definition": "Classification of products by their type or purpose",
+        "symbolic_score": 0.726850058117009,
+        "semantic_score": 0.8282133936882019,
+        "hybrid_score": 0.797804393016844
+      },
+      {
+        "candidate_id": "DA002",
+        "candidate_name": "Product SKU",
+        "candidate_definition": "Stock keeping unit code used to identify products in inventory",
+        "symbolic_score": 0.565,
+        "semantic_score": 0.445239782333374,
+        "hybrid_score": 0.4811678476333618
+      },
+      {
+        "candidate_id": "DA015",
+        "candidate_name": "Department Code",
+        "candidate_definition": "Code representing a specific department within an organization",
+        "symbolic_score": 0.26285714285714284,
+        "semantic_score": 0.3312765955924988,
+        "hybrid_score": 0.310750759771892
+      }
+    ]
+  }
+]

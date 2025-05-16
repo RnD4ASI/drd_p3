@@ -1,0 +1,14 @@
+{
+  "type": "unique_attributes",
+  "count": 15,
+  "model": "./model/finance_embeddings",
+  "provider": "huggingface",
+  "timestamp": 1747381804,
+  "embedding_file": "output/run_20250516_175004/embeddings/embeddings_1747381804.npy",
+  "shape": [
+    15,
+    768
+  ],
+  "dtype": "float32",
+  "dimensions": 768
+}

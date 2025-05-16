@@ -8,6 +8,8 @@ from sentence_transformers import SentenceTransformer, models, util
 import torch
 from loguru import logger
 from src.azure_integration import AzureOpenAIClient
+import tiktoken
+
 
 # logger is imported from loguru
 
@@ -160,73 +162,94 @@ class EmbeddingModel:
             logger.error(f"Error in load_model: {e}")
             raise
     
-    def get_embeddings(self, texts: Union[str, List[str]], batch_size: int = 16) -> np.ndarray:
-        """Get embeddings for the given texts, processing in batches to avoid token limits.
-        
+    def get_embeddings(self, texts: Union[str, List[str]], batch_size: Optional[int] = None, max_tokens_per_batch: int = 8192, encoding_name: str = "cl100k_base", buffer_ratio: float = 0.9) -> np.ndarray:
+        """
+        Get embeddings for the given texts, batching by total token count to avoid model limits.
+
         Parameters:
             texts (Union[str, List[str]]): Text(s) to embed
-            batch_size (int): Maximum number of texts to process in a single batch
-            
+            batch_size (Optional[int]): Maximum number of texts per batch (soft limit, actual batch may be smaller if token limit is hit). If None, will be dynamically calculated based on token counts and max_tokens_per_batch.
+            max_tokens_per_batch (int): Maximum number of tokens allowed in a batch (default 8192)
+            encoding_name (str): tiktoken encoding name to use (default 'cl100k_base' for OpenAI, change if using other models)
+            buffer_ratio (float): Safety ratio for dynamic batch size calculation (default 0.9, i.e. use 90% of token limit)
         Returns:
             np.ndarray: Embedding vectors
+        Raises:
+            ImportError if tiktoken is not installed
         """
         try:
+            if tiktoken is None:
+                raise ImportError("tiktoken is required for token-based batching. Please install it and add to requirements.txt.")
+
             # Convert single text to list
             if isinstance(texts, str):
                 texts = [texts]
-            
-            # Ensure we have a list
+
             if not isinstance(texts, list):
                 raise ValueError(f"Texts must be a string or a list of strings, got {type(texts)}")
-            
-            # Log the number of texts to process
+
             total_texts = len(texts)
-            logger.info(f"Generating embeddings for {total_texts} texts with batch size {batch_size}")
-            
-            # Process in batches to avoid token limits
+            encoding = tiktoken.get_encoding(encoding_name)
+            token_counts = [len(encoding.encode(text)) for text in texts]
+            total_tokens = sum(token_counts)
+
+            # Dynamically calculate batch_size if not provided
+            if batch_size is None or batch_size <= 0:
+                if total_texts > 1:
+                    avg_tokens_per_text = total_tokens / total_texts
+                    batch_size = max(1, int((max_tokens_per_batch * buffer_ratio) / avg_tokens_per_text))
+                    logger.info(f"Dynamically calculated batch_size: {batch_size} (avg tokens/text={avg_tokens_per_text:.2f}, buffer_ratio={buffer_ratio})")
+                else:
+                    batch_size = 1
+
+            logger.info(f"Generating embeddings for {total_texts} texts with max_tokens_per_batch={max_tokens_per_batch}, batch_size={batch_size}")
+
+            # Create batches where sum(tokens) <= max_tokens_per_batch and len(batch) <= batch_size
+            batches = []
+            current_batch = []
+            current_tokens = 0
+            for idx, (text, tokens) in enumerate(zip(texts, token_counts)):
+                if tokens > max_tokens_per_batch:
+                    logger.error(f"Text at index {idx} exceeds max_tokens_per_batch ({tokens} > {max_tokens_per_batch}), skipping.")
+                    continue  # Or raise error if you want to be strict
+                if (current_tokens + tokens > max_tokens_per_batch) or (len(current_batch) >= batch_size):
+                    if current_batch:
+                        batches.append(current_batch)
+                    current_batch = [text]
+                    current_tokens = tokens
+                else:
+                    current_batch.append(text)
+                    current_tokens += tokens
+            if current_batch:
+                batches.append(current_batch)
+
+            logger.info(f"Total batches to process: {len(batches)}")
             all_embeddings = []
-            for i in range(0, total_texts, batch_size):
-                batch_texts = texts[i:i+batch_size]
-                batch_end = min(i+batch_size, total_texts)
-                logger.info(f"Processing batch {i//batch_size + 1}/{(total_texts+batch_size-1)//batch_size}: texts {i+1}-{batch_end} of {total_texts}")
-                
-                # Use Azure OpenAI for embeddings if specified
+            for batch_idx, batch_texts in enumerate(batches):
+                logger.info(f"Processing batch {batch_idx+1}/{len(batches)} with {len(batch_texts)} texts, total tokens: {sum(len(encoding.encode(t)) for t in batch_texts)}")
                 if self.provider == "azure_openai":
                     if not self.azure_client or not self.azure_client.is_configured:
                         raise ValueError("Azure OpenAI client not configured. Check environment variables.")
-                    
-                    # Get embeddings from Azure OpenAI
                     try:
                         batch_embeddings = self.azure_client.get_embeddings(batch_texts, self.model_path)
-                        # Azure returns a list of embeddings
                         if isinstance(batch_embeddings[0], list):
                             all_embeddings.extend(batch_embeddings)
                         else:
-                            # Single embedding case
                             all_embeddings.append(batch_embeddings)
                     except Exception as e:
-                        logger.error(f"Azure OpenAI embeddings failed for batch {i//batch_size + 1}: {e}")
+                        logger.error(f"Azure OpenAI embeddings failed for batch {batch_idx+1}: {e}")
                         raise
-            
-            # Use local models (HuggingFace or SentenceTransformer)
                 elif self.provider == "huggingface":
                     if self.model is None:
                         raise ValueError("Model not loaded. Call load_model first.")
-                    
-                    # Use SentenceTransformer if available
                     if isinstance(self.model, SentenceTransformer):
                         batch_embeddings = self.model.encode(batch_texts)
                         all_embeddings.extend(batch_embeddings)
                     else:
                         raise ValueError(f"Unsupported model type: {type(self.model)}")
-
-                            # Not supported
                 else:
                     raise ValueError(f"Unsupported provider: {self.provider}")
-            
-            # Convert all embeddings to numpy array
             return np.array(all_embeddings)
-                
         except Exception as e:
             logger.error(f"Error in get_embeddings: {e}")
             raise
@@ -257,6 +280,9 @@ def save_embeddings(embeddings: np.ndarray, output_dir: Union[str, Path], metada
     try:
         # Ensure output directory exists
         output_dir = Path(output_dir)
+        # Always save to an 'embeddings' subfolder
+        if output_dir.name != 'embeddings':
+            output_dir = output_dir / 'embeddings'
         os.makedirs(output_dir, exist_ok=True)
         
         # Generate timestamp for the filename
